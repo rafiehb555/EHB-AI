@@ -72,6 +72,9 @@ async function configureGit() {
 
 // Main sync function
 async function syncWithGitHub() {
+    const syncStartTime = new Date();
+    log(`Starting sync at ${syncStartTime.toLocaleTimeString()}`);
+    
     try {
         // Configure git first
         await configureGit();
@@ -86,9 +89,17 @@ async function syncWithGitHub() {
             await executeCommand('git add .');
             log('Changes added');
             
-            // Create commit
-            const timestamp = new Date().toISOString();
-            const commitMessage = `🔁 Auto-sync update: ${timestamp}`;
+            // Create commit with detailed timestamp
+            const timestamp = new Date().toLocaleString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            const commitMessage = `🔄 Auto-sync update: ${timestamp}`;
             await executeCommand(`git commit -m "${commitMessage}"`);
             log('Changes committed');
             
@@ -129,6 +140,17 @@ async function syncWithGitHub() {
     } catch (error) {
         log(`Sync error: ${error.message}`);
     }
+
+    const syncEndTime = new Date();
+    const syncDuration = (syncEndTime - syncStartTime) / 1000;
+    log(`Sync completed in ${syncDuration.toFixed(2)} seconds`);
+}
+
+// Function to schedule next sync
+function scheduleNextSync() {
+    const now = new Date();
+    const nextSync = new Date(now.getTime() + (SYNC_INTERVAL_MINUTES * 60 * 1000));
+    log(`Next sync scheduled for: ${nextSync.toLocaleTimeString()}`);
 }
 
 // Start the sync process
@@ -139,8 +161,14 @@ function startAutoSync() {
     // Run immediately
     syncWithGitHub();
     
+    // Schedule next sync
+    scheduleNextSync();
+    
     // Set interval for future syncs
-    setInterval(syncWithGitHub, SYNC_INTERVAL_MINUTES * 60 * 1000);
+    setInterval(() => {
+        syncWithGitHub();
+        scheduleNextSync();
+    }, SYNC_INTERVAL_MINUTES * 60 * 1000);
 }
 
 // Start the service
