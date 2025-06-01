@@ -13,7 +13,7 @@ const path = require('path');
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN; // Should be set in environment variables
 const REMOTE_REPO = process.env.GIT_REPO || 'https://github.com/rafiehb555/EHB-AI-DEV-.git';
 const BRANCH = 'main';
-const SYNC_INTERVAL_MINUTES = 15;
+const SYNC_INTERVAL_MINUTES = 5;
 const AUTHOR_NAME = 'EHB Agent';
 const AUTHOR_EMAIL = 'agent@ehb.com';
 
@@ -150,24 +150,46 @@ async function pushToGitHub() {
 // Main sync function
 async function syncWithGitHub() {
   try {
-    // Initialize if needed
-    await initializeGit();
+    // Check git status
+    const status = await executeCommand('git status --porcelain');
     
-    // Check for changes and commit
-    const hasChanges = await checkAndCommit();
-    
-    // Push if there were changes
-    if (hasChanges) {
-      await pushToGitHub();
+    if (status) {
+      log('Changes detected, starting sync process...');
+      
+      // Add all changes
+      await executeCommand('git add .');
+      log('Changes added');
+      
+      // Create commit
+      const timestamp = new Date().toISOString();
+      const commitMessage = `🔁 Auto-sync update: ${timestamp}`;
+      await executeCommand(`git commit -m "${commitMessage}"`);
+      log('Changes committed');
+      
+      // Try to push
+      try {
+        await executeCommand('git push origin main');
+        log('Changes pushed successfully');
+      } catch (pushError) {
+        log('Push failed, trying to pull first...');
+        
+        // Pull and rebase
+        await executeCommand('git pull origin main --rebase');
+        log('Pull successful, trying push again...');
+        
+        // Try push again
+        await executeCommand('git push origin main');
+        log('Changes pushed successfully after pull');
+      }
+    } else {
+      log('No changes detected');
     }
-    
-    log('Sync process completed');
   } catch (error) {
     log(`Sync error: ${error.message}`);
   }
 }
 
-// Start the sync process with interval
+// Start the sync process
 function startAutoSync() {
   log('Starting GitHub auto-sync service...');
   log(`Sync interval: ${SYNC_INTERVAL_MINUTES} minutes`);

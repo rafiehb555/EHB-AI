@@ -19,7 +19,10 @@
     "start:zip-watcher": "node scripts/watch-assets.js",
     "start:dev-agent-system": "node scripts/dev-agent-workflow.js",
     "start:multi-service-dashboard": "node scripts/multi-service-dashboard-server.js",
-    "start:ehb-home-integrator": "node scripts/ehb-home-integrator.js"
+    "start:ehb-home-integrator": "node scripts/ehb-home-integrator.js",
+    "start:backend": "node EHB-DASHBOARD/backend/server.js",
+    "start:frontend": "cd EHB-DASHBOARD && npm run dev",
+    "start:home": "cd EHB-HOME && npm run dev"
   },
   "keywords": [],
   "author": "",
@@ -161,7 +164,8 @@
     "web3": "^4.16.0",
     "winston": "^3.17.0",
     "ws": "^8.18.2",
-    "zod": "^3.24.4"
+    "zod": "^3.24.4",
+    "tailwindcss": "^3.4.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.21",
