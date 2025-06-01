@@ -10,209 +10,138 @@ const fs = require('fs');
 const path = require('path');
 
 // Configuration
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN; // Should be set in environment variables
-const REMOTE_REPO = process.env.GIT_REPO || 'https://github.com/rafiehb555/EHB-AI-DEV-.git';
-const BRANCH = 'main';
 const SYNC_INTERVAL_MINUTES = 5;
-const AUTHOR_NAME = 'EHB Agent';
-const AUTHOR_EMAIL = 'agent@ehb.com';
-
-// Log file
 const LOG_FILE = path.join(__dirname, 'github-sync.log');
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 5000; // 5 seconds
 
 // Function to log messages
 function log(message) {
-  const timestamp = new Date().toISOString();
-  const logMessage = `[${timestamp}] ${message}\n`;
-  
-  console.log(message);
-  fs.appendFileSync(LOG_FILE, logMessage);
+    const timestamp = new Date().toISOString();
+    const logMessage = `[${timestamp}] ${message}\n`;
+    console.log(message);
+    fs.appendFileSync(LOG_FILE, logMessage);
 }
 
-// Function to execute a shell command
-function executeCommand(command) {
-  return new Promise((resolve, reject) => {
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        log(`Error executing command: ${error.message}`);
-        reject(error);
-        return;
-      }
-      
-      if (stderr) {
-        log(`Command stderr: ${stderr}`);
-      }
-      
-      resolve(stdout.trim());
-    });
-  });
+// Function to sleep
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// Initialize git repository if not already initialized
-async function initializeGit() {
-  try {
-    // Check if .git directory exists
-    if (!fs.existsSync(path.join(__dirname, '.git'))) {
-      log('Initializing git repository...');
-      await executeCommand('git init');
+// Function to execute shell commands with retry
+async function executeCommand(command, retries = MAX_RETRIES) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            return await new Promise((resolve, reject) => {
+                exec(command, (error, stdout, stderr) => {
+                    if (error) {
+                        if (i === retries - 1) {
+                            log(`Error executing command (final attempt): ${error.message}`);
+                            reject(error);
+                        } else {
+                            log(`Error executing command (attempt ${i + 1}/${retries}): ${error.message}`);
+                            resolve(null); // Continue to next retry
+                        }
+                        return;
+                    }
+                    if (stderr && !stderr.includes('warning: in the working copy')) {
+                        log(`Command stderr: ${stderr}`);
+                    }
+                    resolve(stdout.trim());
+                });
+            });
+        } catch (error) {
+            if (i === retries - 1) throw error;
+            await sleep(RETRY_DELAY);
+        }
     }
-    
-    // Set git configuration
-    await executeCommand(`git config --global user.name "${AUTHOR_NAME}"`);
-    await executeCommand(`git config --global user.email "${AUTHOR_EMAIL}"`);
-    
-    // Check if remote is already set
-    const remotes = await executeCommand('git remote -v');
-    
-    if (!remotes.includes('origin')) {
-      // Add remote origin with token
-      const remoteUrl = GITHUB_TOKEN 
-        ? REMOTE_REPO.replace('https://', `https://${GITHUB_TOKEN}@`) 
-        : REMOTE_REPO;
-        
-      await executeCommand(`git remote add origin ${remoteUrl}`);
-      log('Remote repository configured');
-    }
-    
-    log('Git repository initialized successfully');
-  } catch (error) {
-    log(`Failed to initialize git: ${error.message}`);
-  }
 }
 
-// Check for changes and commit
-async function checkAndCommit() {
-  try {
-    // Add all changes
-    log('Checking for changes...');
-    
-    // Get status
-    const status = await executeCommand('git status --porcelain');
-    
-    if (status) {
-      // There are changes
-      log(`Found changes:\n${status}`);
-      
-      // Add all changes
-      await executeCommand('git add .');
-      
-      // Create commit message with timestamp
-      const timestamp = new Date().toISOString();
-      const commitMessage = `🔁 Auto-sync update: ${timestamp}`;
-      
-      // Commit changes
-      await executeCommand(`git commit -m "${commitMessage}"`);
-      log('Changes committed successfully');
-      
-      return true; // Changes were committed
-    } else {
-      log('No changes detected');
-      return false; // No changes
-    }
-  } catch (error) {
-    log(`Error checking for changes: ${error.message}`);
-    return false;
-  }
-}
-
-// Push changes to GitHub
-async function pushToGitHub() {
-  try {
-    // Push to remote
-    log(`Pushing changes to ${REMOTE_REPO} (${BRANCH})...`);
-    
-    // Force push to ensure sync
-    await executeCommand(`git push -u origin ${BRANCH}`);
-    
-    log('Changes pushed successfully');
-    return true;
-  } catch (error) {
-    log(`Error pushing to GitHub: ${error.message}`);
-    
-    // If push fails, try to pull first (in case of rejected non-fast-forward)
+// Function to configure git
+async function configureGit() {
     try {
-      log('Attempting to pull latest changes...');
-      await executeCommand(`git pull origin ${BRANCH} --rebase`);
-      
-      // Try pushing again
-      log('Retrying push...');
-      await executeCommand(`git push -u origin ${BRANCH}`);
-      
-      log('Changes pushed successfully after pull');
-      return true;
-    } catch (pullError) {
-      log(`Error during pull and retry: ${pullError.message}`);
-      return false;
+        // Set git configuration
+        await executeCommand('git config --global core.autocrlf true');
+        await executeCommand('git config --global user.name "EHB Auto Sync"');
+        await executeCommand('git config --global user.email "auto-sync@ehb.com"');
+        log('Git configuration updated');
+    } catch (error) {
+        log(`Error configuring git: ${error.message}`);
     }
-  }
 }
 
 // Main sync function
 async function syncWithGitHub() {
-  try {
-    // Check git status
-    const status = await executeCommand('git status --porcelain');
-    
-    if (status) {
-      log('Changes detected, starting sync process...');
-      
-      // Add all changes
-      await executeCommand('git add .');
-      log('Changes added');
-      
-      // Create commit
-      const timestamp = new Date().toISOString();
-      const commitMessage = `🔁 Auto-sync update: ${timestamp}`;
-      await executeCommand(`git commit -m "${commitMessage}"`);
-      log('Changes committed');
-      
-      // Try to push
-      try {
-        await executeCommand('git push origin main');
-        log('Changes pushed successfully');
-      } catch (pushError) {
-        log('Push failed, trying to pull first...');
+    try {
+        // Configure git first
+        await configureGit();
+
+        // Check git status
+        const status = await executeCommand('git status --porcelain');
         
-        // Pull and rebase
-        await executeCommand('git pull origin main --rebase');
-        log('Pull successful, trying push again...');
-        
-        // Try push again
-        await executeCommand('git push origin main');
-        log('Changes pushed successfully after pull');
-      }
-    } else {
-      log('No changes detected');
+        if (status) {
+            log('Changes detected, starting sync process...');
+            
+            // Add all changes
+            await executeCommand('git add .');
+            log('Changes added');
+            
+            // Create commit
+            const timestamp = new Date().toISOString();
+            const commitMessage = `🔁 Auto-sync update: ${timestamp}`;
+            await executeCommand(`git commit -m "${commitMessage}"`);
+            log('Changes committed');
+            
+            // Try to push with retry
+            let pushSuccess = false;
+            for (let i = 0; i < MAX_RETRIES && !pushSuccess; i++) {
+                try {
+                    await executeCommand('git push origin main');
+                    log('Changes pushed successfully');
+                    pushSuccess = true;
+                } catch (pushError) {
+                    log(`Push failed (attempt ${i + 1}/${MAX_RETRIES}), trying to pull first...`);
+                    
+                    try {
+                        // Pull and rebase
+                        await executeCommand('git pull origin main --rebase');
+                        log('Pull successful, trying push again...');
+                        
+                        // Try push again
+                        await executeCommand('git push origin main');
+                        log('Changes pushed successfully after pull');
+                        pushSuccess = true;
+                    } catch (pullError) {
+                        log(`Pull and retry failed (attempt ${i + 1}/${MAX_RETRIES}): ${pullError.message}`);
+                        if (i < MAX_RETRIES - 1) {
+                            await sleep(RETRY_DELAY);
+                        }
+                    }
+                }
+            }
+            
+            if (!pushSuccess) {
+                log('Failed to push changes after all retries');
+            }
+        } else {
+            log('No changes detected');
+        }
+    } catch (error) {
+        log(`Sync error: ${error.message}`);
     }
-  } catch (error) {
-    log(`Sync error: ${error.message}`);
-  }
 }
 
 // Start the sync process
 function startAutoSync() {
-  log('Starting GitHub auto-sync service...');
-  log(`Sync interval: ${SYNC_INTERVAL_MINUTES} minutes`);
-  
-  // Run immediately
-  syncWithGitHub();
-  
-  // Set interval for future syncs
-  setInterval(syncWithGitHub, SYNC_INTERVAL_MINUTES * 60 * 1000);
+    log('Starting GitHub auto-sync service...');
+    log(`Sync interval: ${SYNC_INTERVAL_MINUTES} minutes`);
+    
+    // Run immediately
+    syncWithGitHub();
+    
+    // Set interval for future syncs
+    setInterval(syncWithGitHub, SYNC_INTERVAL_MINUTES * 60 * 1000);
 }
 
-// Check for required environment variables
-if (!GITHUB_TOKEN) {
-  log('WARNING: GITHUB_TOKEN environment variable is not set. Authentication may fail.');
-}
-
-// Run the auto-sync process
+// Start the service
 startAutoSync();
-
-// Export functions for module use
-module.exports = {
-  syncWithGitHub,
-  initializeGit,
-  checkAndCommit,
-  pushToGitHub
-};

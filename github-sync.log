@@ -2,3 +2,57 @@
 [2025-06-01T17:36:08.478Z] Starting GitHub auto-sync service...
 [2025-06-01T17:36:08.478Z] Sync interval: 5 minutes
 [2025-06-01T17:36:08.539Z] Changes detected, starting sync process...
+[2025-06-01T17:36:09.286Z] Command stderr: warning: in the working copy of 'EHB-HOME/next.config.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'package-lock.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'package.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/build-manifest.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/react-loadable-manifest.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/server/_error.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/server/middleware-build-manifest.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/server/middleware-manifest.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/server/pages-manifest.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/server/pages/_app.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/server/pages/_document.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/server/pages/_error.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/server/vendor-chunks/next.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/server/webpack-runtime.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/static/chunks/_error.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/static/chunks/_pages-dir-browser_node_modules_next_dist_pages__app_js.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/static/chunks/_pages-dir-browser_node_modules_next_dist_pages__error_js.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/static/chunks/main.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/static/chunks/pages/_app.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/static/chunks/pages/_error.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/static/chunks/react-refresh.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/static/chunks/webpack.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.next/trace', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auto-git-pull.sh', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auto-git-push.sh', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'ehb-nextjs-app/.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'ehb-nextjs-app/README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'ehb-nextjs-app/eslint.config.mjs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'ehb-nextjs-app/next.config.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'ehb-nextjs-app/package-lock.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'ehb-nextjs-app/package.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'ehb-nextjs-app/src/app/globals.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'ehb-nextjs-app/src/app/layout.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'ehb-nextjs-app/src/app/page.module.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'ehb-nextjs-app/src/app/page.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'ehb-nextjs-app/tsconfig.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'github-sync.log', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'services/SOT-Technologies/frontend/package-lock.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'services/SOT-Technologies/frontend/package.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'system/db/db.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'system/routes/authRoutes.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'system/routes/dashboardRoutes.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'system/server.js', LF will be replaced by CRLF the next time Git touches it
+
+[2025-06-01T17:36:09.288Z] Changes added
+[2025-06-01T17:36:09.636Z] Changes committed
+[2025-06-01T17:36:36.660Z] Command stderr: To https://github.com/rafiehb555/EHB-AI.git
+   1152a70..14fa0ed  main -> main
+
+[2025-06-01T17:36:36.660Z] Changes pushed successfully
+[2025-06-01T17:40:00.427Z] Starting GitHub auto-sync service...
+[2025-06-01T17:40:00.431Z] Sync interval: 5 minutes
+[2025-06-01T17:40:00.539Z] Git configuration updated
+[2025-06-01T17:40:00.599Z] Changes detected, starting sync process...
