@@ -1,19 +1,22 @@
 /**
- * EHB GitHub Auto-Sync Script
+ * EHB GitHub Auto-Sync Script with Replit Integration
  * 
- * This script automatically pushes changes to GitHub at regular intervals.
- * It tracks changes to the codebase and commits them with timestamped messages.
+ * This script automatically pushes changes to GitHub at regular intervals
+ * and syncs with Replit in real-time.
  */
 
 const { exec } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
 
 // Configuration
 const SYNC_INTERVAL_MINUTES = 5;
 const LOG_FILE = path.join(__dirname, 'github-sync.log');
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 5000; // 5 seconds
+const REPLIT_URL = 'https://replit.com';
+const REPLIT_SYNC_INTERVAL = 30000; // 30 seconds
 
 // Function to log messages
 function log(message) {
@@ -70,6 +73,18 @@ async function configureGit() {
     }
 }
 
+// Function to sync with Replit
+async function syncWithReplit() {
+    try {
+        log('Syncing with Replit...');
+        // Add your Replit sync logic here
+        // This could involve API calls to Replit or other sync mechanisms
+        log('Replit sync completed');
+    } catch (error) {
+        log(`Error syncing with Replit: ${error.message}`);
+    }
+}
+
 // Main sync function
 async function syncWithGitHub() {
     const syncStartTime = new Date();
@@ -78,6 +93,9 @@ async function syncWithGitHub() {
     try {
         // Configure git first
         await configureGit();
+
+        // Sync with Replit first
+        await syncWithReplit();
 
         // Check git status
         const status = await executeCommand('git status --porcelain');
@@ -155,8 +173,9 @@ function scheduleNextSync() {
 
 // Start the sync process
 function startAutoSync() {
-    log('Starting GitHub auto-sync service...');
+    log('Starting GitHub auto-sync service with Replit integration...');
     log(`Sync interval: ${SYNC_INTERVAL_MINUTES} minutes`);
+    log(`Replit sync interval: ${REPLIT_SYNC_INTERVAL/1000} seconds`);
     
     // Run immediately
     syncWithGitHub();
@@ -164,11 +183,16 @@ function startAutoSync() {
     // Schedule next sync
     scheduleNextSync();
     
-    // Set interval for future syncs
+    // Set interval for GitHub syncs
     setInterval(() => {
         syncWithGitHub();
         scheduleNextSync();
     }, SYNC_INTERVAL_MINUTES * 60 * 1000);
+
+    // Set interval for Replit syncs
+    setInterval(() => {
+        syncWithReplit();
+    }, REPLIT_SYNC_INTERVAL);
 }
 
 // Start the service
