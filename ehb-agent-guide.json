@@ -1,0 +1,41 @@
+{
+  "project": "EHB Technologies Limited",
+  "framework": "Next.js",
+  "stack": ["Next.js", "Node.js", "MongoDB", "Tailwind", "Web3", "Moonbeam", "Substrate (future)", "ethers.js", "polkadot.js", "wagmi"],
+  "developer": "AI Agent (Cursor)",
+  "rules": {
+    "routing": "Use app/ or pages/ directory routing (/api, /dashboard, etc.)",
+    "api": "Use pages/api/*.js or app/api for all backend logic",
+    "components": "Use /components/ folder for all UI blocks (buttons, cards, popups)",
+    "styling": "Use Tailwind CSS only",
+    "token_handling": "Use .env.local for API Keys & Secrets",
+    "blockchain": "Use ethers.js, polkadot.js, wagmi or @moonbeam-network SDKs",
+    "wallet_rpc": "Setup inside utils/web3/ or services/ folder",
+    "backend_extensions": "If heavy backend is needed, use Node.js APIs via /api routes",
+    "mongodb": "Setup with mongoose inside lib/db.js or utils/dbConnect.js",
+    "admin_panel": "Route to /admin, secure with middleware.ts",
+    "realtime": "Use Socket.io in api/socket.js (or Next.js server edge functions)"
+  },
+  "agents": {
+    "frontend": "Always use Next.js components with Tailwind",
+    "backend": "Use API inside pages/api/*.js or app/api",
+    "blockchain": "Integrate Moonbeam, Substrate, Polkadot using Next.js-compatible tools",
+    "debugger": "Auto-fix code inside app/, api/, or components/",
+    "router": "Detect which service (GoSellr, Franchise, etc.) is being built and activate correct agent",
+    "data": "If any file, config, secret, or content is missing — ask the user automatically",
+    "security": "Protect .env keys, validate inputs, use headers securely",
+    "testing": "Use Jest or Playwright for component/api testing (if required)"
+  },
+  "always_ask": [
+    ".env.local values (e.g., MONGO_URI, RPC, JWT_SECRET)",
+    "Admin credentials",
+    "Wallet address requirements (for validators)",
+    "Initial tokenomics and staking thresholds",
+    "UI references (for dashboards)"
+  ],
+  "final_guideline": [
+    "Never use Express.js, PHP, Laravel, or any other backend.",
+    "Everything must remain inside Next.js architecture only."
+  ],
+  "module_start_message": "Starting {module} on Next.js with Tailwind and /api/{module} backend"
+} 

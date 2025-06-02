@@ -9,6 +9,131 @@
 const hasOpenAIKey = Boolean(process.env.OPENAI_API_KEY);
 
 /**
+ * --- Unified AI Providers Integration ---
+ * Below are imports, initializations, and example usage for all supported AI providers.
+ * Add your API keys and config in .env.local as needed.
+ */
+
+// OpenAI
+import OpenAI from 'openai'; // npm install openai
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
+
+// Anthropic
+import { Anthropic } from '@anthropic-ai/sdk'; // npm install @anthropic-ai/sdk
+const anthropic = process.env.ANTHROPIC_API_KEY ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY }) : null;
+
+// Cohere
+import { CohereClient } from '@ai-sdk/cohere';
+const cohere = process.env.COHERE_API_KEY ? new CohereClient({ apiKey: process.env.COHERE_API_KEY }) : null;
+
+// Mistral
+import { MistralClient } from '@ai-sdk/mistral';
+const mistral = process.env.MISTRAL_API_KEY ? new MistralClient({ apiKey: process.env.MISTRAL_API_KEY }) : null;
+
+// Fireworks
+import { FireworksClient } from '@ai-sdk/fireworks';
+const fireworks = process.env.FIREWORKS_API_KEY ? new FireworksClient({ apiKey: process.env.FIREWORKS_API_KEY }) : null;
+
+// TogetherAI
+import { TogetherAIClient } from '@ai-sdk/togetherai';
+const togetherai = process.env.TOGETHERAI_API_KEY ? new TogetherAIClient({ apiKey: process.env.TOGETHERAI_API_KEY }) : null;
+
+// DeepSeek
+import { DeepSeekClient } from '@ai-sdk/deepseek';
+const deepseek = process.env.DEEPSEEK_API_KEY ? new DeepSeekClient({ apiKey: process.env.DEEPSEEK_API_KEY }) : null;
+
+// Cerebras
+import { CerebrasClient } from '@ai-sdk/cerebras';
+const cerebras = process.env.CEREBRAS_API_KEY ? new CerebrasClient({ apiKey: process.env.CEREBRAS_API_KEY }) : null;
+
+// Perplexity
+import { PerplexityClient } from '@ai-sdk/perplexity';
+const perplexity = process.env.PERPLEXITY_API_KEY ? new PerplexityClient({ apiKey: process.env.PERPLEXITY_API_KEY }) : null;
+
+// Ollama
+import { OllamaClient } from 'ollama-ai-provider';
+const ollama = process.env.OLLAMA_API_KEY ? new OllamaClient({ apiKey: process.env.OLLAMA_API_KEY }) : null;
+
+// ChromeAI
+import { ChromeAIClient } from 'chrome-ai';
+const chromeai = process.env.CHROMEAI_API_KEY ? new ChromeAIClient({ apiKey: process.env.CHROMEAI_API_KEY }) : null;
+
+// Luma
+import { LumaClient } from '@ai-sdk/luma';
+const luma = process.env.LUMA_API_KEY ? new LumaClient({ apiKey: process.env.LUMA_API_KEY }) : null;
+
+// DeepInfra
+import { DeepInfraClient } from '@ai-sdk/deepinfra';
+const deepinfra = process.env.DEEPINFRA_API_KEY ? new DeepInfraClient({ apiKey: process.env.DEEPINFRA_API_KEY }) : null;
+
+// Fal
+import { FalClient } from '@ai-sdk/fal';
+const fal = process.env.FAL_API_KEY ? new FalClient({ apiKey: process.env.FAL_API_KEY }) : null;
+
+// Groq
+import { GroqClient } from '@ai-sdk/groq';
+const groq = process.env.GROQ_API_KEY ? new GroqClient({ apiKey: process.env.GROQ_API_KEY }) : null;
+
+// Amazon Bedrock
+import { AmazonBedrockClient } from '@ai-sdk/amazon-bedrock';
+const bedrock = process.env.BEDROCK_API_KEY ? new AmazonBedrockClient({ apiKey: process.env.BEDROCK_API_KEY }) : null;
+
+// Azure OpenAI
+import { AzureClient } from '@ai-sdk/azure';
+const azure = process.env.AZURE_OPENAI_KEY ? new AzureClient({ apiKey: process.env.AZURE_OPENAI_KEY }) : null;
+
+// xAI Grok
+import { XAIClient } from '@ai-sdk/xai';
+const xai = process.env.XAI_API_KEY ? new XAIClient({ apiKey: process.env.XAI_API_KEY }) : null;
+
+// --- Example unified interface ---
+export const AIProviders = {
+  openai,
+  anthropic,
+  cohere,
+  mistral,
+  fireworks,
+  togetherai,
+  deepseek,
+  cerebras,
+  perplexity,
+  ollama,
+  chromeai,
+  luma,
+  deepinfra,
+  fal,
+  groq,
+  bedrock,
+  azure,
+  xai,
+};
+
+/**
+ * Example: Generate text/completion from a specific provider
+ * Usage: await generateWithProvider('openai', { prompt: 'Hello world' })
+ */
+export async function generateWithProvider(provider, options) {
+  switch (provider) {
+    case 'openai':
+      if (!openai) throw new Error('OpenAI not configured');
+      return await openai.chat.completions.create({
+        model: 'gpt-3.5-turbo',
+        messages: [{ role: 'user', content: options.prompt }],
+      });
+    case 'anthropic':
+      if (!anthropic) throw new Error('Anthropic not configured');
+      return await anthropic.messages.create({
+        model: 'claude-3-opus-20240229',
+        max_tokens: 1024,
+        messages: [{ role: 'user', content: options.prompt }],
+      });
+    // Add similar cases for other providers as needed
+    default:
+      throw new Error('Provider not supported or not configured');
+  }
+}
+
+/**
  * Get a code explanation from the AI service
  * @param {string} code - The code to explain
  * @param {string} language - The programming language of the code
@@ -139,3 +264,5 @@ export function isAIServiceAvailable() {
   // In a real implementation, this would check for API keys and service availability
   return hasOpenAIKey || process.env.ANTHROPIC_API_KEY;
 }
+
+// Node-only providers (like Google VertexAI) have been moved to AIService.server.js for backend/API use only.

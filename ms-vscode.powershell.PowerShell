@@ -1,0 +1,14 @@
+#!/bin/bash
+# Substrate SDK (Rust + Substrate CLI) Install Script
+
+echo "Installing Rust toolchain..."
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+echo "Sourcing Rust environment..."
+source $HOME/.cargo/env
+
+echo "Installing Substrate CLI..."
+cargo install --force --locked substrate
+
+echo "Substrate installation complete!"
+echo "Run 'substrate --dev' to start a local node." 

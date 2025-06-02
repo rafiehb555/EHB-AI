@@ -111,6 +111,57 @@ function startAllWorkflows() {
   return processes;
 }
 
+// Helper: Convert static HTML to Next.js page (very basic demo)
+function migrateHtmlToNextPage(htmlPath, targetDir) {
+  const html = fs.readFileSync(htmlPath, 'utf8');
+  const pageName = path.basename(htmlPath, '.html');
+  const nextPagePath = path.join(targetDir, `${pageName}.js`);
+  const jsx = `
+import Head from 'next/head';
+export default function ${pageName.charAt(0).toUpperCase() + pageName.slice(1)}() {
+  return (
+    <>
+      <Head>
+        <title>${pageName}</title>
+      </Head>
+      <div dangerouslySetInnerHTML={{ __html: \`${html.replace(/`/g, '\\`')}\` }} />
+    </>
+  );
+}
+  `;
+  fs.writeFileSync(nextPagePath, jsx);
+  log(`✅ Migrated HTML: ${htmlPath} → ${nextPagePath}`);
+}
+
+// Helper: Convert Express API to Next.js API (very basic demo)
+function migrateExpressApiToNextApi(jsPath, targetDir) {
+  const apiName = path.basename(jsPath, '.js');
+  const nextApiPath = path.join(targetDir, `${apiName}.js`);
+  const handler = `
+export default function handler(req, res) {
+  // TODO: Migrate logic from ${jsPath}
+  res.status(200).json({ message: 'Migrated from legacy Express API: ${apiName}' });
+}
+  `;
+  fs.writeFileSync(nextApiPath, handler);
+  log(`✅ Migrated Express API: ${jsPath} → ${nextApiPath}`);
+}
+
+// Update migrateFolder to use above helpers
+function migrateFolder(folder) {
+  log(`Scanning: ${folder}`);
+  fs.readdirSync(folder).forEach(file => {
+    const fullPath = path.join(folder, file);
+    if (fs.statSync(fullPath).isDirectory()) {
+      migrateFolder(fullPath);
+    } else if (fullPath.endsWith('.html')) {
+      migrateHtmlToNextPage(fullPath, path.resolve('pages'));
+    } else if (fullPath.endsWith('.js') && fs.readFileSync(fullPath, 'utf8').includes('express')) {
+      migrateExpressApiToNextApi(fullPath, path.resolve('pages/api'));
+    }
+  });
+}
+
 // Export functions
 module.exports = {
   startWorkflow,

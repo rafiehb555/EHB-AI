@@ -7,7 +7,7 @@ import Chart from '../../components/Chart';
 import Stats from '../../components/Stats';
 import UserTable from '../../components/UserTable';
 import { useAuth } from '../../context/AuthContext';
-import { fetchAdminDashboardData, fetchUsers } from '../../utils/api';
+import { fetchAdminDashboardData, fetchUsers } from '../../utils/api.js';
 import { 
   Users, 
   DollarSign, 

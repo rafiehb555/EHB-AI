@@ -5,13 +5,31 @@
 
 export const modules = [
   {
+    "id": "ehb-ai-dev-fullstack",
+    "name": "EHB-AI-Dev-Fullstack",
+    "description": "AI-powered integration hub for all EHB modules.",
+    "type": "system",
+    "port": 5003,
+    "url": "http://localhost:5003",
+    "path": "C:\\Users\\PC\\Downloads\\EHB_AI_Project\\EHB-AI-Dev-Fullstack"
+  },
+  {
+    "id": "ehb-dashboard",
+    "name": "EHB-DASHBOARD",
+    "description": "Administrative dashboard for managing the EHB system.",
+    "type": "admin",
+    "port": 5006,
+    "url": "http://localhost:5006",
+    "path": "C:\\Users\\PC\\Downloads\\EHB_AI_Project\\EHB-DASHBOARD"
+  },
+  {
     "id": "ehb-home",
     "name": "EHB-HOME",
     "description": "The central dashboard and entry point for the entire EHB system.",
     "type": "system",
     "port": 5005,
     "url": "http://localhost:5005",
-    "path": "/home/runner/workspace/EHB-HOME"
+    "path": "C:\\Users\\PC\\Downloads\\EHB_AI_Project\\EHB-HOME"
   }
 ];
 

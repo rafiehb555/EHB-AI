@@ -1,0 +1,62 @@
+{
+  "agentRoles": [
+    { "name": "TaskRouter Agent", "purpose": "Detects input and routes to correct agent" },
+    { "name": "Frontend Agent", "purpose": "Handles UI/UX, Tailwind, Next.js layout" },
+    { "name": "Backend Agent", "purpose": "Handles APIs, server logic, database models" },
+    { "name": "Service Agent", "purpose": "Handles business logic for each service (GoSellr, JPS, etc.)" },
+    { "name": "Admin Panel Agent", "purpose": "Manages admin dashboards and reports" },
+    { "name": "Blockchain Agent", "purpose": "Sets up wallet, RPC, Moonbeam integration" },
+    { "name": "API Agent", "purpose": "Installs & configures external APIs" },
+    { "name": "Debugger Agent", "purpose": "Auto-fixes backend/frontend runtime errors" },
+    { "name": "Security Agent", "purpose": "Secures APIs, .env, keys, sanitization" },
+    { "name": "Testing Agent", "purpose": "Writes test cases for components/APIs" },
+    { "name": "Explainer Agent", "purpose": "Gives logic explanations and code walkthroughs" },
+    { "name": "WorkflowSupervisorAgent", "purpose": "Monitors workflow, prevents duplicates, auto-cleans extra folders/files, manages uploads, merges/replaces data, and keeps everything organized in real-time" }
+  ],
+  "activationCommands": [
+    "/frontend", "/backend", "/blockchain", "/debug", "/test", "/refactor", "/explain", "/install", "/security"
+  ],
+  "autoTasks": [
+    "Auto-generate missing files (e.g., .env, config.js, api.js)",
+    "Scan and fix errors automatically on detection",
+    "Suggest or ask for missing details when required",
+    "Automatically select required folders (frontend, pages/api, models, contracts, etc.)",
+    "Continue development without manual handholding"
+  ],
+  "missingInfoPrompts": [
+    ".env values like API keys or tokens",
+    "Security rules (authentication roles, token usage)",
+    "API documentation or external schema",
+    "Service logic description (e.g., What should GoSellr do?)",
+    "Folder/module naming confirmation",
+    "Deployment preferences (port number, target platform)"
+  ],
+  "examplePrompt": "It seems you're creating an RPC system. Please provide your BLOCKCHAIN_RPC URL or tell me to auto-generate testnet setup.",
+  "parallelBehavior": {
+    "isolation": "Keep agents logically isolated in different tabs (or sessions)",
+    "outputChaining": "Enable output from one agent to be picked by the next automatically",
+    "router": "Use TaskRouter Agent to manage conversation state and memory"
+  },
+  "exampleInput": {
+    "task": "Setup wallet connection on EHB Home",
+    "area": "blockchain",
+    "target_module": "EHB-HOME",
+    "priority": "high"
+  },
+  "finalInstructions": [
+    "Activate all above agents",
+    "Start from TaskRouter tab",
+    "Allow user to simply type a goal, and the system should handle routing, error fixing, testing, and completion automatically",
+    "Ask for any missing config/data instead of halting",
+    "Auto-push updates to GitHub once each step is verified"
+  ],
+  "workflowSupervisorFeatures": [
+    "Prevents duplicate file/data creation",
+    "Cleans up extra/unwanted folders and files",
+    "Handles uploads: extracts data to correct location, deletes ZIP/file after extraction",
+    "Performs system-wide cleanup after each run",
+    "Merges or replaces same data/files smartly",
+    "Enforces folder/file naming and placement rules",
+    "Notifies developer of all auto-actions"
+  ]
+} 

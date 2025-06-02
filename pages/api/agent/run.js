@@ -1,0 +1,18 @@
+import { runAgent } from '../../../agent/index';
+
+export default async function handler(req, res) {
+  if (req.method === 'POST') {
+    const { input } = req.body;
+    if (!input) {
+      return res.status(400).json({ error: 'Bad Request', message: 'Input is required' });
+    }
+    try {
+      const result = await runAgent(input);
+      res.json({ success: true, result });
+    } catch (error) {
+      res.status(500).json({ error: 'Internal Server Error', message: error.message });
+    }
+  } else {
+    res.status(405).json({ error: 'Method not allowed' });
+  }
+} 
